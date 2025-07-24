@@ -1,68 +1,80 @@
-'use client'
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon, UploadCloud, X, FileText, FileSpreadsheet } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { useUploadDocument } from "@/hooks/documents";
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Calendar } from '@/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { CalendarIcon, UploadCloud, X, FileText, FileSpreadsheet } from 'lucide-react'
-import { format } from 'date-fns'
-import { cn } from '@/lib/utils'
-import { useUploadDocument } from '@/hooks/documents'   
+export default function DocumentUploadDrawer({ open, onOpenChange, onUpload }) {
+  const [projectName, setProjectName] = useState("");
+  const [notes, setNotes] = useState("");
+  const [dueDate, setDueDate] = useState(null);
+  const [files, setFiles] = useState([]);
 
-export default function DocumentUploadDrawer({ open, onOpenChange }) {
-  const [projectName, setProjectName] = useState('')
-  const [notes, setNotes] = useState('')
-  const [dueDate, setDueDate] = useState(null)
-  const [files, setFiles] = useState([])
+  const { uploadDocument, isUploading } = useUploadDocument();
 
-  const { uploadDocument, isUploading } = useUploadDocument()
-
-  const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
+  const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files).filter((file) => {
       if (file.size > MAX_FILE_SIZE) {
-        alert(`File "${file.name}" exceeds the 10 MB limit and will not be uploaded.`)
-        return false
+        alert(`File "${file.name}" exceeds the 10 MB limit and will not be uploaded.`);
+        return false;
       }
-      return true
-    })
-    setFiles(selectedFiles)
-  }
+      return true;
+    });
+    setFiles((prev) => [...prev, ...selectedFiles]);
+  };
 
   const removeFile = (index) => {
-    setFiles(files.filter((_, i) => i !== index))
-  }
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
 
-  const handleSubmit = () => {
-    const formData = new FormData()
-    formData.append('projectName', projectName)
-    formData.append('notes', notes)
-    if (dueDate) formData.append('dueDate', dueDate.toISOString())
+  const handleSubmit = async () => {
+    if (!projectName || files.length === 0) {
+      alert("Please fill in the project name and upload at least one file.");
+      return;
+    }
 
-    files.forEach((file) => formData.append('files', file))
-   console.log(formData,"formdataaa")
-    uploadDocument(formData, {
-      onSuccess: () => {
-        onOpenChange(false) 
-        resetForm()
-      },
-    })
-  }
+    const formData = new FormData();
+    formData.append("projectName", projectName);
+    formData.append("notes", notes);
+    if (dueDate) formData.append("dueDate", dueDate.toISOString());
+    files.forEach((file) => formData.append("files", file));
+    console.log("FormData:", formData);
+
+    try {
+      await uploadDocument(formData, {
+        onSuccess: () => {
+          onUpload();
+          onOpenChange(false);
+        },
+        onError: (error) => {
+          console.error("Upload error:", error);
+          alert("Failed to upload documents. Please try again.");
+        },
+      });
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      alert("An unexpected error occurred. Please try again.");
+    }
+  };
 
   const resetForm = () => {
-    setProjectName('')
-    setNotes('')
-    setDueDate(null)
-    setFiles([])
-  }
+    setProjectName("");
+    setNotes("");
+    setDueDate(null);
+    setFiles([]);
+  };
 
   const handleOpenChange = (isOpen) => {
-    if (!isOpen) resetForm()
-    onOpenChange(isOpen)
-  }
+    if (!isOpen) resetForm();
+    onOpenChange(isOpen);
+  };
 
   return (
     <div className="space-y-6 p-6">
@@ -92,12 +104,12 @@ export default function DocumentUploadDrawer({ open, onOpenChange }) {
             <Button
               variant="outline"
               className={cn(
-                'w-full justify-start text-left font-normal',
-                !dueDate && 'text-muted-foreground'
+                "w-full justify-start text-left font-normal",
+                !dueDate && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {dueDate ? format(dueDate, 'PPP') : <span>Pick a date</span>}
+              {dueDate ? format(dueDate, "PPP") : <span>Pick a date</span>}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
@@ -155,8 +167,10 @@ export default function DocumentUploadDrawer({ open, onOpenChange }) {
                 className="flex items-center justify-between p-2 bg-gray-50 rounded"
               >
                 <div className="flex items-center gap-2">
-                  <FileIcon extension={file.name.split('.').pop()} />
-                  <span className="text-sm text-gray-700 truncate max-w-[180px]">{file.name}</span>
+                  <FileIcon extension={file.name.split(".").pop()} />
+                  <span className="text-sm text-gray-700 truncate max-w-[180px]">
+                    {file.name}
+                  </span>
                 </div>
                 <button
                   type="button"
@@ -177,26 +191,26 @@ export default function DocumentUploadDrawer({ open, onOpenChange }) {
         <Button
           onClick={handleSubmit}
           disabled={!projectName || files.length === 0 || isUploading}
-          className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 shadow-md"
+          className="w-full bg-[#fe4f02] hover:bg-[#cc3f01]"
         >
-          {isUploading ? 'Uploading…' : 'Upload Documents'}
+          {isUploading ? "Uploading…" : "Upload Documents"}
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
 function FileIcon({ extension }) {
-  const iconProps = { className: 'w-4 h-4' }
+  const iconProps = { className: "w-4 h-4" };
 
   switch (extension?.toLowerCase()) {
-    case 'pdf':
-      return <FileText {...iconProps} className="text-red-500" />
-    case 'docx':
-      return <FileText {...iconProps} className="text-blue-500" />
-    case 'xlsx':
-      return <FileSpreadsheet {...iconProps} className="text-green-500" />
+    case "pdf":
+      return <FileText {...iconProps} className="text-red-500" />;
+    case "docx":
+      return <FileText {...iconProps} className="text-blue-500" />;
+    case "xlsx":
+      return <FileSpreadsheet {...iconProps} className="text-green-500" />;
     default:
-      return <FileText {...iconProps} className="text-gray-500" />
+      return <FileText {...iconProps} className="text-gray-500" />;
   }
 }

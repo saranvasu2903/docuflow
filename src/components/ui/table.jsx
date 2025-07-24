@@ -69,7 +69,7 @@ function TableHead({
       data-slot="table-head"
       className={cn(
         "h-12 px-4 text-left align-middle font-bold whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        "bg-[#f6f6f6] text-black rounded-t-md",
+        "bg-[#f6f6f6] text-black ",
         className
       )}
       {...props}

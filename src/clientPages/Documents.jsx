@@ -1,206 +1,56 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableCell,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ChevronDown, ChevronUp, Download, Plus } from "lucide-react";
-import { DocumentUploadDrawer } from "../components/Documets/DocumentUploadDrawer";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useGetUploadedDocument } from "@/hooks/documents";
-
-/* -------------------------------------------------------------------------- */
-/*                                SUB–COMPONENTS                              */
-/* -------------------------------------------------------------------------- */
-function DocumentTable({ docs, expandedRow, onToggleRow }) {
-  return (
-    <Table className="min-w-full">
-      <TableHeader>
-        <TableRow>
-          <TableHead /> {/* caret */}
-          <TableHead>Project Name</TableHead>
-          <TableHead>Due Date</TableHead>
-          <TableHead>Notes</TableHead>
-          <TableHead>No. of Files</TableHead>
-        </TableRow>
-      </TableHeader>
-
-      <TableBody>
-        {docs.flatMap((doc) => [
-          // Parent row
-          <TableRow key={doc.id} className="border-t">
-            <TableCell className="w-10">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => onToggleRow(doc.id)}
-              >
-                {expandedRow === doc.id ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </Button>
-            </TableCell>
-            <TableCell>{doc.projectname}</TableCell>
-            <TableCell>
-              {doc.duedate
-                ? new Date(doc.duedate).toLocaleDateString()
-                : "—"}
-            </TableCell>
-            <TableCell>
-              {doc.notes?.length > 40
-                ? `${doc.notes.slice(0, 40)}…`
-                : doc.notes || "—"}
-            </TableCell>
-            <TableCell>{doc.files?.length || 0}</TableCell>
-          </TableRow>,
-          // Expanded row (conditionally included)
-          expandedRow === doc.id && (
-            <TableRow key={`${doc.id}-expanded`} className="bg-gray-50">
-              <TableCell colSpan={5} className="p-0">
-                <div className="p-4">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Project Name</TableHead>
-                        <TableHead>Filename</TableHead>
-                        <TableHead>Download</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {doc.files.map((file) => (
-                        <TableRow key={file.id}>
-                          <TableCell>{doc.projectname}</TableCell>
-                          <TableCell>{file.filename}</TableCell>
-                          <TableCell>
-                            <a
-                              href={file.filepath}
-                              download
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <Button variant="ghost" size="icon">
-                                <Download className="h-4 w-4 text-blue-600" />
-                              </Button>
-                            </a>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </TableCell>
-            </TableRow>
-          ),
-        ])}
-      </TableBody>
-    </Table>
-  );
-}
-
-function AssignDrawer({
-  open,
-  onOpenChange,
-  selected,
-  teamLeads,
-  chosenLead,
-  setChosenLead,
-  assignLead,
-}) {
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:w-[480px]">
-        <SheetHeader>
-          <SheetTitle className="text-xl font-semibold">
-            Assign Documents
-          </SheetTitle>
-        </SheetHeader>
-
-        <div className="mt-8 space-y-6 p-5">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <p className="text-sm text-blue-700">
-              You’re assigning <strong>{selected.length}</strong> document
-              {selected.length !== 1 ? "s" : ""} to a team lead.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-3">
-              Select Team Lead
-            </h3>
-            <RadioGroup
-              value={chosenLead}
-              onValueChange={setChosenLead}
-              className="space-y-3"
-            >
-              {teamLeads.map((tl) => (
-                <div
-                  key={tl.id}
-                  className="flex items-center gap-3 border rounded-lg p-4 hover:border-purple-300 transition-colors"
-                >
-                  <RadioGroupItem
-                    value={tl.id}
-                    id={tl.id}
-                    className="h-5 w-5 text-purple-600"
-                  />
-                  <label
-                    htmlFor={tl.id}
-                    className="w-full cursor-pointer text-gray-700 font-medium"
-                  >
-                    {tl.name}
-                  </label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
-        </div>
-
-        <SheetFooter className="mt-8">
-          <Button
-            disabled={!selected.length}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
-            onClick={assignLead}
-          >
-            Confirm Assignment
-          </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
-  );
-}
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  CalendarIcon,
+  UploadCloud,
+  X,
+  FileText,
+  FileSpreadsheet,
+  Plus,
+} from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { useUploadDocument } from "@/hooks/documents";
+import DocumentTable from "@/components/Documents/DocumentTable";
+import AssignDrawer from "@/components/Documents/AssignDrawer";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useGetProjectsByOrg } from "@/hooks/projects";
+import { useSelector } from "react-redux";
 
 function Header({ openUploadDrawer, openAssignDrawer, selected }) {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
       <h2 className="text-xl font-semibold">Document Management</h2>
-
       <div className="flex gap-4">
         <Button
           onClick={openUploadDrawer}
-          className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
+          className="bg-[#fe4f02] hover:bg-[#cc3f01] cursor-pointer"
         >
           <Plus className="h-4 w-4 mr-2" />
           Upload Documents
         </Button>
-
         <Button
           disabled={!selected.length}
           onClick={openAssignDrawer}
-          className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
+          className="bg-[#fe4f02] hover:bg-[#cc3f01] cursor-pointer"
         >
           Assign to Team Lead ({selected.length})
         </Button>
@@ -209,77 +59,284 @@ function Header({ openUploadDrawer, openAssignDrawer, selected }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                MAIN PAGE                                   */
-/* -------------------------------------------------------------------------- */
+function DocumentUploadDrawer({ open, onOpenChange, onUpload, projects }) {
+  const [projectName, setProjectName] = useState("");
+  const [notes, setNotes] = useState("");
+  const [dueDate, setDueDate] = useState(null);
+  const [files, setFiles] = useState([]);
+  const { uploadDocument, isUploading } = useUploadDocument();
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files).filter((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        alert(`File "${file.name}" exceeds the 10 MB limit and will not be uploaded.`);
+        return false;
+      }
+      return true;
+    });
+    setFiles((prev) => [...prev, ...selectedFiles]);
+  };
+
+  const removeFile = (index) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async () => {
+    if (!projectName || files.length === 0) {
+      alert("Please fill in the project name and upload at least one file.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("projectName", projectName);
+    formData.append("notes", notes);
+    if (dueDate) formData.append("dueDate", dueDate.toISOString());
+    files.forEach((file) => formData.append("files", file));
+
+    try {
+      await uploadDocument(formData, {
+        onSuccess: () => {
+          onUpload();
+          onOpenChange(false);
+        },
+        onError: (error) => {
+          console.error("Upload error:", error);
+          alert("Failed to upload documents. Please try again.");
+        },
+      });
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      alert("An unexpected error occurred. Please try again.");
+    }
+  };
+
+  const resetForm = () => {
+    setProjectName("");
+    setNotes("");
+    setDueDate(null);
+    setFiles([]);
+  };
+
+  const handleOpenChange = (isOpen) => {
+    if (!isOpen) resetForm();
+    onOpenChange(isOpen);
+  };
+
+  return (
+    <div className="space-y-6 p-6">
+      <h2 className="text-xl font-semibold text-gray-800">Upload New Documents</h2>
+
+      {/* Project Name */}
+      <div>
+        <label htmlFor="projectName" className="block text-sm font-medium text-gray-700 mb-2">
+          Project Name *
+        </label>
+        <Select value={projectName} onValueChange={setProjectName}>
+          <SelectTrigger id="projectName">
+            <SelectValue placeholder="Select project name" />
+          </SelectTrigger>
+          <SelectContent className="z-50"> {/* Increased z-index */}
+            {projects?.map((project) => (
+              <SelectItem key={project.id} value={project.id}>
+                {project.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Due Date */}
+      <div>
+        <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-2">
+          Due Date
+        </label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn("w-full justify-start text-left font-normal", !dueDate && "text-muted-foreground")}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {dueDate ? format(dueDate, "PPP") : <span>Pick a date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="z-50 w-auto p-0"> {/* Increased z-index */}
+            <Calendar mode="single" selected={dueDate} onSelect={setDueDate} initialFocus />
+          </PopoverContent>
+        </Popover>
+      </div>
+
+      {/* Notes */}
+      <div>
+        <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
+          Notes
+        </label>
+        <Textarea
+          id="notes"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Add any additional notes..."
+          rows={3}
+        />
+      </div>
+
+      {/* File Upload */}
+      <div>
+        <label htmlFor="fileUpload" className="block text-sm font-medium text-gray-700 mb-2">
+          Upload Files *
+        </label>
+        <label
+          htmlFor="fileUpload"
+          className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+        >
+          <div className="flex flex-col items-center justify-center">
+            <UploadCloud className="w-8 h-8 text-gray-400 mb-2" />
+            <p className="text-sm text-gray-500">
+              <span className="font-medium text-purple-600">Click to upload</span> or drag and drop
+            </p>
+            <p className="text-xs text-gray-400 mt-1">PDF, DOCX, XLSX (Max 10MB each)</p>
+          </div>
+          <input
+            id="fileUpload"
+            type="file"
+            className="hidden"
+            multiple
+            accept=".pdf,.docx,.xlsx"
+            onChange={handleFileChange}
+          />
+        </label>
+
+        {/* File Preview */}
+        {files.length > 0 && (
+          <div className="mt-4 space-y-2">
+            {files.map((file, index) => (
+              <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                <div className="flex items-center gap-2">
+                  <FileIcon extension={file.name.split(".").pop()} />
+                  <span className="text-sm text-gray-700 truncate max-w-[180px]">{file.name}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeFile(index)}
+                  className="text-gray-400 hover:text-red-500"
+                  aria-label={`Remove ${file.name}`}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Submit Button */}
+      <div className="pt-4">
+        <Button
+          onClick={handleSubmit}
+          disabled={!projectName || files.length === 0 || isUploading}
+          className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 shadow-md"
+        >
+          {isUploading ? "Uploading…" : "Upload Documents"}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function FileIcon({ extension }) {
+  const iconProps = { className: "w-4 h-4" };
+
+  switch (extension?.toLowerCase()) {
+    case "pdf":
+      return <FileText {...iconProps} className="text-red-500" />;
+    case "docx":
+      return <FileText {...iconProps} className="text-blue-500" />;
+    case "xlsx":
+      return <FileSpreadsheet {...iconProps} className="text-green-500" />;
+    default:
+      return <FileText {...iconProps} className="text-gray-500" />;
+  }
+}
 
 export default function DocumentsPage() {
   const { documents, isLoading } = useGetUploadedDocument();
-
-  /* selection logic if you later add checkboxes */
   const [selected, setSelected] = useState([]);
-
-  /* drawers & dropdown */
   const [uploadDrawer, setUploadDrawer] = useState(false);
   const [assignDrawer, setAssignDrawer] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
-
-  /* team lead picker */
   const [chosenLead, setChosenLead] = useState("tl1");
   const teamLeads = [
     { id: "tl1", name: "Alice TL" },
     { id: "tl2", name: "Bob TL" },
   ];
 
-  /*  handlers  */
+  const { role, organizationId } = useSelector((state) => ({
+    role: state.user.role,
+    organizationId: state.user.organizationId,
+  }));
+
+  const {
+    projects,
+    isLoading: projectsLoading,
+    isError: projectsError,
+  } = useGetProjectsByOrg(organizationId, {
+    enabled: !!organizationId,
+    staleTime: 10 * 60 * 1000,
+    cacheTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
   const toggleRow = (id) => setExpandedRow((prev) => (prev === id ? null : id));
 
   const assignLead = () => {
-    /* your assign logic here */
     setSelected([]);
     setAssignDrawer(false);
   };
 
   const handleUpload = () => {
-    /* you might refetch documents after upload */
     setUploadDrawer(false);
   };
 
-  /* ------------------------------------------------------------------ */
+  if (projectsError) {
+    return <div className="p-6 text-red-500">Error loading projects. Please try again later.</div>;
+  }
+
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4">
       <Header
         openUploadDrawer={() => setUploadDrawer(true)}
         openAssignDrawer={() => setAssignDrawer(true)}
         selected={selected}
       />
 
-      <div className="border rounded-lg">
+      <div >
         <div className="overflow-x-auto">
-          {isLoading ? (
-            <p className="p-6 text-center">Loading…</p>
+          {isLoading || projectsLoading ? (
+            <p className="p-6 text-center">Loading...</p>
           ) : (
             <DocumentTable
-              docs={documents}
+              docs={documents || []}
               expandedRow={expandedRow}
               onToggleRow={toggleRow}
+              selected={selected}
+              onSelect={setSelected}
             />
           )}
         </div>
       </div>
 
-      {/* Upload Drawer */}
       <Sheet open={uploadDrawer} onOpenChange={setUploadDrawer}>
-        <SheetContent side="right" className="w-full sm:w-[480px]">
+        <SheetContent side="right" className="custom-drawer-content">
           <DocumentUploadDrawer
             open={uploadDrawer}
             onOpenChange={setUploadDrawer}
             onUpload={handleUpload}
+            projects={projects || []}
           />
         </SheetContent>
       </Sheet>
 
-      {/* Assign Drawer */}
       <AssignDrawer
         open={assignDrawer}
         onOpenChange={setAssignDrawer}
