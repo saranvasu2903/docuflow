@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id              String            @id
+  email           String?
+  fullname        String?
+  role            String            @default("admin")
+  fulldata        Json?
+  organizationid  Int?
+  Org_ID          String?           @map("Org_ID")
+  organization    organization?     @relation(fields: [organizationid], references: [id])
+  tierid          String?
+  orgrole         String?
+  project_members project_members[]
+
+  @@map("users")
+}
+
+model organization {
+  id          Int       @id @default(autoincrement())
+  name        String
+  createdby   String
+  booking_url String?
+  website     String?
+  phonenumber String
+  instagram   String?
+  facebook    String?
+  workingfrom String?
+  workingto   String?
+  teamsize    Int?
+  teamlogo    String?
+  Org_ID      String?   @map("Org_ID")
+  email       String?
+  linkedin    String?
+  x           String?
+  industry    String?
+  address     String?
+  city        String?
+  state       String?
+  zip         String?
+  country     String?
+  isverified  Boolean?  @default(true)
+  createdat   DateTime? @default(now())
+  updatedat   DateTime? @updatedAt
+  tierid      String?   @map("tierid")
+  tier        tier?     @relation(fields: [tierid], references: [id])
+
+  tierstartdate DateTime?    @map("tierstartdate")
+  tierenddate   DateTime?    @map("tierenddate")
+  status        String?      @map("status")
+  users         users[]
+  teammembers   teammember[]
+
+  @@map("organization")
+}
+
+model teammember {
+  id             Int           @id @default(autoincrement())
+  parentid       String
+  fullname       String?
+  email          String?
+  organizationid Int?
+  Org_ID         String?       @map("Org_ID")
+  status         String?
+  organization   organization? @relation(fields: [organizationid], references: [id])
+
+  @@map("teammember")
+}
+
+model tier {
+  id             String         @id @default(uuid())
+  name           String         @unique
+  description    String?
+  durationmonths Int
+  price          Decimal        @default(0.00)
+  isfree         Boolean        @default(false)
+  teamlimit      Int            @default(1)
+  taskupload     Int            @default(0)
+  createdat      DateTime       @default(now())
+  updatedat      DateTime       @updatedAt
+  organizations  organization[]
+
+  @@map("tiers")
+}
+
+model projects {
+  id              Int               @id @default(autoincrement())
+  name            String
+  description     String?
+  createdby       String // user ID of the manager or creator
+  start_date      DateTime?
+  end_date        DateTime?
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  org_id          String?
+  project_members project_members[]
+
+  @@map("projects")
+}
+
+model project_members {
+  id         Int     @id @default(autoincrement())
+  project_id Int
+  user_id    String?
+
+  role_in_project String
+  joined_at       DateTime? @default(now())
+  created_at      DateTime? @default(now())
+  updated_at      DateTime? @updatedAt
+
+  project projects @relation(fields: [project_id], references: [id])
+  users   users?   @relation(fields: [user_id], references: [id])
+
+  @@map("project_members")
+}
+
+model documents {
+  id             Int               @id @default(autoincrement())
+  projectname    String
+  duedate        DateTime?
+  notes          String?
+  organizationid String?
+  isactive       Boolean           @default(true)
+  isdelete       Boolean           @default(false)
+  createdat      DateTime          @default(now())
+  updatedat      DateTime          @default(now())
+  files          documents_files[]
+
+  @@map("documents")
+}
+
+model documents_files {
+  id         Int       @id @default(autoincrement())
+  documentid Int
+  filepath   String?
+  filename   String?
+  isactive   Boolean   @default(true)
+  isdelete   Boolean   @default(false)
+  createdat  DateTime  @default(now())
+  updatedat  DateTime  @default(now())
+  document   documents @relation(fields: [documentid], references: [id])
+
+  @@map("documents_files")
+}
