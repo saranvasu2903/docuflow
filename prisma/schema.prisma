@@ -20,6 +20,8 @@ model users {
   tierid          String?
   orgrole         String?
   project_members project_members[]
+  documents       documents[]
+  
 
   @@map("users")
 }
@@ -95,7 +97,7 @@ model projects {
   id              Int               @id @default(autoincrement())
   name            String
   description     String?
-  createdby       String // user ID of the manager or creator
+  createdby       String
   start_date      DateTime?
   end_date        DateTime?
   created_at      DateTime          @default(now())
@@ -107,10 +109,9 @@ model projects {
 }
 
 model project_members {
-  id         Int     @id @default(autoincrement())
-  project_id Int
-  user_id    String?
-
+  id              Int       @id @default(autoincrement())
+  project_id      Int
+  user_id         String?
   role_in_project String
   joined_at       DateTime? @default(now())
   created_at      DateTime? @default(now())
@@ -128,11 +129,14 @@ model documents {
   duedate        DateTime?
   notes          String?
   organizationid String?
+  teamlead       String?
+  uploadedby     String?
   isactive       Boolean           @default(true)
   isdelete       Boolean           @default(false)
   createdat      DateTime          @default(now())
   updatedat      DateTime          @default(now())
   files          documents_files[]
+  uploadedUser   users?            @relation(fields: [uploadedby], references: [id])
 
   @@map("documents")
 }

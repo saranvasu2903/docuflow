@@ -2,30 +2,14 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Download } from "lucide-react";
 
-export default function DocumentTable({ docs, expandedRow, onToggleRow, selected, onSelect }) {
-  const handleSelect = (docId) => {
-    onSelect((prev) =>
-      prev.includes(docId) ? prev.filter((id) => id !== docId) : [...prev, docId]
-    );
-  };
-
+export default function DocumentTable({ docs, expandedRow, onToggleRow }) {
   return (
     <Table className="">
       <TableHeader>
         <TableRow>
-          <TableHead>
-            <input
-              type="checkbox"
-              onChange={(e) =>
-                onSelect(
-                  e.target.checked ? docs.map((doc) => doc.id) : []
-                )
-              }
-              checked={docs.length > 0 && docs.every((doc) => selected.includes(doc.id))}
-            />
-          </TableHead>
           <TableHead /> {/* Caret */}
           <TableHead>Project Name</TableHead>
+          <TableHead>Uploaded By</TableHead>
           <TableHead>Due Date</TableHead>
           <TableHead>Notes</TableHead>
           <TableHead>No. of Files</TableHead>
@@ -36,13 +20,6 @@ export default function DocumentTable({ docs, expandedRow, onToggleRow, selected
         {docs.flatMap((doc) => {
           const rows = [
             <TableRow key={doc.id} className="">
-              <TableCell className="w-10">
-                <input
-                  type="checkbox"
-                  checked={selected.includes(doc.id)}
-                  onChange={() => handleSelect(doc.id)}
-                />
-              </TableCell>
               <TableCell className="w-10">
                 <Button
                   variant="ghost"
@@ -57,6 +34,7 @@ export default function DocumentTable({ docs, expandedRow, onToggleRow, selected
                 </Button>
               </TableCell>
               <TableCell>{doc.projectname}</TableCell>
+              <TableCell>{doc.uploadedUser?.fullname || "--"}</TableCell>
               <TableCell>
                 {doc.duedate
                   ? new Date(doc.duedate).toLocaleDateString()
@@ -116,7 +94,6 @@ export default function DocumentTable({ docs, expandedRow, onToggleRow, selected
               </TableRow>
             );
           }
-
           return rows;
         })}
       </TableBody>

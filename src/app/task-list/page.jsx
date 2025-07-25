@@ -34,7 +34,7 @@ const assignedDocs = [
 
   return (
     <div className="p-6 space-y-6">
-      <h2 className="text-2xl font-semibold">Assigned Documents</h2>
+      <h2 className="text-2xl font-semibold">Assigned Documents for teamlead</h2>
 
       <AssignedTasksTable documents={assignedDocs} onAssignClick={openDrawer} />
 

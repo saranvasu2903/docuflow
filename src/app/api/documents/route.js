@@ -11,12 +11,15 @@ export async function POST(req) {
     if (!organizationid) {
       return NextResponse.json({ error: "organizationid is required in headers" }, { status: 400 });
     }
+
     const form = await req.formData();
     const projectname = form.get("projectName");
     const dueDateRaw = form.get("dueDate");
     const notes = form.get("notes") || null;
+    const uploadedby = form.get("uploadedby");
     const files = form.getAll("files");
-
+    const teamleadArray = form.getAll("teamlead"); 
+    const teamlead = teamleadArray.length > 0 ? teamleadArray.join(",") : null;
     if (!projectname || files.length === 0) {
       return NextResponse.json({ error: "projectname and at least one file are required" }, { status: 400 });
     }
@@ -26,9 +29,11 @@ export async function POST(req) {
     const document = await prisma.documents.create({
       data: {
         projectname,
-        duedate: duedate,
+        duedate,
         notes,
-        organizationid
+        organizationid,
+        teamlead,
+        uploadedby,
       }
     });
 
@@ -77,13 +82,24 @@ export async function GET(req) {
       },
       include: {
         files: true,
+        uploadedUser: {
+          select: {
+            fullname: true,
+          },
+        },
       },
       orderBy: {
         id: "desc",
       },
     });
 
-    return NextResponse.json(documents);
+    // Optionally, map to flatten the structure
+    const response = documents.map((doc) => ({
+      ...doc,
+      uploadedby_fullname: doc.uploadedUser?.fullname || null,
+    }));
+
+    return NextResponse.json(response);
   } catch (err) {
     console.error(err);
     return NextResponse.json(
