@@ -1,8 +1,16 @@
+"use client";
+
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Download } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Adjust the import path as needed
 
 export default function DocumentTable({ docs, expandedRow, onToggleRow }) {
+  // Show loading spinner if docs is undefined or empty
+  if (!docs || docs.length === 0) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <Table className="">
       <TableHeader>

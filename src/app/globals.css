@@ -127,3 +127,29 @@
   z-index: 1000 !important;
   overflow: visible !important;
 }
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  @keyframes wave-bar {
+    0%, 100% {
+      transform: scaleY(0.4);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-wave-bar {
+    animation: wave-bar 1.2s ease-in-out infinite;
+  }
+
+  .bg-orange-loader {
+    background-color: #fe4f02;
+  }
+}

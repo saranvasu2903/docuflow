@@ -20,7 +20,7 @@ const NAV = [
   { label: "Documents", href: "/documents", icon: FileText },
   { label: "Projects", href: "/projects", icon: FolderKanban },
   { label: "Task list", href: "/task-list", icon: ListChecks },
-  { label: "Work Items", href: "/employee-task", icon: ClipboardList },
+  // { label: "Work Items", href: "/employee-task", icon: ClipboardList },
   { label: "Employees", href: "/employee", icon: Users },
 ];
 

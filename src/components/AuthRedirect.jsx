@@ -28,7 +28,7 @@ export default function AuthRedirect() {
 
       // Non-admin users go to dashboard
       if (!isAdmin) {
-        router.replace("/settings");
+        router.replace("/dashboard");
         return;
       }
 
@@ -40,7 +40,7 @@ export default function AuthRedirect() {
         if (!tierid) {
           router.replace("/subscription");
         } else {
-          router.replace("/settings");
+          router.replace("/dashboard");
         }
       } catch (err) {
         console.error("Error fetching user data:", err.message);

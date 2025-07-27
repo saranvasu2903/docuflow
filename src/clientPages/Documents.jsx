@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import { useGetProjectsByOrg } from "@/hooks/projects";
 import { useSelector } from "react-redux";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 function Header({ openUploadDrawer }) {
   return (
@@ -40,7 +41,7 @@ function Header({ openUploadDrawer }) {
       <div className="flex gap-4">
         <Button
           onClick={openUploadDrawer}
-          className="bg-[#fe4f02] hover:bg-[#cc3f01] cursor-pointer"
+          className="border border-[#fe4f02] text-[#fe4f02] cursor-pointer bg-white rounded-full flex items-center transition-colors duration-200 hover:bg-[#fe4f02] hover:text-white"
         >
           <Plus className="h-4 w-4 mr-2" />
           Upload Documents
@@ -92,7 +93,7 @@ function DocumentUploadDrawer({ open, onOpenChange, onUpload, projects }) {
 
     const formData = new FormData();
     formData.append("projectName", projectName);
-    formData.append("uploadedby",uploadedby)
+    formData.append("uploadedby", uploadedby);
     formData.append("notes", notes);
     if (dueDate) formData.append("dueDate", dueDate.toISOString());
 
@@ -133,199 +134,202 @@ function DocumentUploadDrawer({ open, onOpenChange, onUpload, projects }) {
 
   return (
     <div className="space-y-6 p-6">
-      <h2 className="text-xl font-semibold text-gray-800">
-        Upload New Documents
-      </h2>
+      <div className="max-w-2xl mx-auto space-y-6">
+        <h2 className="text-xl font-semibold text-gray-800">
+          Upload New Documents
+        </h2>
 
-      <div>
-        <label
-          htmlFor="projectName"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Project Name *
-        </label>
-        <Select
-          value={projectId}
-          onValueChange={(id) => {
-            const selected = projects.find((p) => p.id === id);
-            setProjectId(id);
-            setProjectName(selected?.name || "");
-          }}
-        >
-          <SelectTrigger id="projectName">
-            <SelectValue placeholder="Select project name" />
-          </SelectTrigger>
-          <SelectContent className="z-[9999] !absolute !top-full !left-0">
-            {projects?.map((project) => (
-              <SelectItem key={project.id} value={project.id}>
-                {project.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+        <div>
+          <label
+            htmlFor="projectName"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Project Name *
+          </label>
+          <Select
+            value={projectId}
+            onValueChange={(id) => {
+              const selected = projects.find((p) => p.id === id);
+              setProjectId(id);
+              setProjectName(selected?.name || "");
+            }}
+          >
+            <SelectTrigger id="projectName">
+              <SelectValue placeholder="Select project name" />
+            </SelectTrigger>
+            <SelectContent className="z-[9999] !absolute !top-full !left-0">
+              {projects?.map((project) => (
+                <SelectItem key={project.id} value={project.id}>
+                  {project.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      {/* Assign to Team Lead */}
-      <div>
-        <label
-          htmlFor="teamLead"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Assign to Team Leads
-        </label>
-        {teamLeads.length === 0 ? (
-          <p className="text-sm text-gray-500">No team leads available</p>
-        ) : (
-          <div className="space-y-2 border p-3 rounded-md">
-            {teamLeads.map((member) => (
-              <div key={member.user_id} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id={`teamLead-${member.user_id}`}
-                  value={member.user_id}
-                  checked={teamLead.includes(member.user_id)}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setTeamLead((prev) => [...prev, member.user_id]);
-                    } else {
-                      setTeamLead((prev) =>
-                        prev.filter((id) => id !== member.user_id)
-                      );
-                    }
-                  }}
-                  className="form-checkbox"
-                />
-                <label
-                  htmlFor={`teamLead-${member.user_id}`}
-                  className="text-sm"
-                >
-                  {member.users.fullname || member.users.email}
-                </label>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Due Date */}
-      <div>
-        <label
-          htmlFor="dueDate"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Due Date
-        </label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "w-full justify-start text-left font-normal",
-                !dueDate && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {dueDate ? format(dueDate, "PPP") : <span>Pick a date</span>}
-            </Button>
-          </PopoverTrigger>
-
-          <PopoverContent className="z-[9999] w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={dueDate}
-              onSelect={setDueDate}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
-      <div>
-        <label
-          htmlFor="notes"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Notes
-        </label>
-        <Textarea
-          id="notes"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="Add any additional notes..."
-          rows={3}
-        />
-      </div>
-
-      {/* File Upload */}
-      <div>
-        <label
-          htmlFor="fileUpload"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
-          Upload Files *
-        </label>
-        <label
-          htmlFor="fileUpload"
-          className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
-        >
-          <div className="flex flex-col items-center justify-center">
-            <UploadCloud className="w-8 h-8 text-gray-400 mb-2" />
-            <p className="text-sm text-gray-500">
-              <span className="font-medium text-purple-600">
-                Click to upload
-              </span>{" "}
-              or drag and drop
-            </p>
-            <p className="text-xs text-gray-400 mt-1">
-              PDF, DOCX, XLSX (Max 10MB each)
-            </p>
-          </div>
-          <input
-            id="fileUpload"
-            type="file"
-            className="hidden"
-            multiple
-            accept=".pdf,.docx,.xlsx"
-            onChange={handleFileChange}
-          />
-        </label>
-
-        {/* File Preview */}
-        {files.length > 0 && (
-          <div className="mt-4 space-y-2">
-            {files.map((file, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-2 bg-gray-50 rounded"
-              >
-                <div className="flex items-center gap-2">
-                  <FileIcon extension={file.name.split(".").pop()} />
-                  <span className="text-sm text-gray-700 truncate max-w-[180px]">
-                    {file.name}
-                  </span>
+        {/* Assign to Team Lead */}
+        <div>
+          <label
+            htmlFor="teamLead"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Assign to Team Leads
+          </label>
+          {teamLeads.length === 0 ? (
+            <p className="text-sm text-gray-500">No team leads available</p>
+          ) : (
+            <div className="space-y-2 border p-3 rounded-md">
+              {teamLeads.map((member) => (
+                <div key={member.user_id} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id={`teamLead-${member.user_id}`}
+                    value={member.user_id}
+                    checked={teamLead.includes(member.user_id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setTeamLead((prev) => [...prev, member.user_id]);
+                      } else {
+                        setTeamLead((prev) =>
+                          prev.filter((id) => id !== member.user_id)
+                        );
+                      }
+                    }}
+                    className="form-checkbox"
+                  />
+                  <label
+                    htmlFor={`teamLead-${member.user_id}`}
+                    className="text-sm"
+                  >
+                    {member.users.fullname || member.users.email}
+                  </label>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => removeFile(index)}
-                  className="text-gray-400 hover:text-red-500"
-                  aria-label={`Remove ${file.name}`}
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-      {/* Submit Button */}
-      <div className="pt-4">
-        <Button
-          onClick={handleSubmit}
-          disabled={!projectName || files.length === 0 || isUploading}
-          className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 shadow-md"
-        >
-          {isUploading ? "Uploading…" : "Upload Documents"}
-        </Button>
+        {/* Due Date */}
+        <div>
+          <label
+            htmlFor="dueDate"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Due Date
+          </label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !dueDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {dueDate ? format(dueDate, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+
+            <PopoverContent className="z-[9999] w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={dueDate}
+                onSelect={setDueDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        <div>
+          <label
+            htmlFor="notes"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Notes
+          </label>
+          <Textarea
+            id="notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Add any additional notes..."
+            rows={3}
+          />
+        </div>
+
+        {/* File Upload */}
+        <div>
+          <label
+            htmlFor="fileUpload"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Upload Files *
+          </label>
+          <label
+            htmlFor="fileUpload"
+            className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+          >
+            <div className="flex flex-col items-center justify-center">
+              <UploadCloud className="w-8 h-8 text-gray-400 mb-2" />
+              <p className="text-sm text-gray-500">
+                <span className="font-medium text-purple-600">
+                  Click to upload
+                </span>{" "}
+                or drag and drop
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                PDF, DOCX, XLSX (Max 10MB each)
+              </p>
+            </div>
+            <input
+              id="fileUpload"
+              type="file"
+              className="hidden"
+              multiple
+              accept=".pdf,.docx,.xlsx"
+              onChange={handleFileChange}
+            />
+          </label>
+
+          {/* File Preview */}
+          {files.length > 0 && (
+            <div className="mt-4 space-y-2">
+              {files.map((file, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                >
+                  <div className="flex items-center gap-2">
+                    <FileIcon extension={file.name.split(".").pop()} />
+                    <span className="text-sm text-gray-700 truncate max-w-[180px]">
+                      {file.name}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeFile(index)}
+                    className="text-gray-400 hover:text-red-500"
+                    aria-label={`Remove ${file.name}`}
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="pt-4">
+          <Button
+            onClick={handleSubmit}
+            disabled={!projectName || files.length === 0 || isUploading}
+            className={`w-full border border-[#fe4f02] text-[#fe4f02] bg-white rounded-full flex items-center justify-center transition-colors duration-200
+        hover:bg-[#fe4f02] hover:text-white 
+        disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {isUploading ? "Uploading…" : "Upload Documents"}
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -381,23 +385,23 @@ export default function DocumentsPage() {
     );
   }
 
+  if (isLoading || projectsLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <div className="p-4">
       <Header openUploadDrawer={() => setUploadDrawer(true)} />
 
       <div>
         <div className="overflow-x-auto">
-          {isLoading || projectsLoading ? (
-            <p className="p-6 text-center">Loading...</p>
-          ) : (
-            <DocumentTable
-              docs={documents || []}
-              expandedRow={expandedRow}
-              onToggleRow={toggleRow}
-              selected={selected}
-              onSelect={setSelected}
-            />
-          )}
+          <DocumentTable
+            docs={documents || []}
+            expandedRow={expandedRow}
+            onToggleRow={toggleRow}
+            selected={selected}
+            onSelect={setSelected}
+          />
         </div>
       </div>
 

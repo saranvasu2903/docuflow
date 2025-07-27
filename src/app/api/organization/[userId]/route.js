@@ -1,13 +1,12 @@
 // app/api/organization/[userId]/route.js
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@/generated/prisma'; // adjust if your path is different
+import { PrismaClient } from '@/generated/prisma'; 
 
 const prisma = new PrismaClient();
 
 export async function GET(_req, { params }) {
   const { userId } = params;
 
-  /* 1 ── Validate input */
   if (!userId) {
     return NextResponse.json(
       { error: 'userId parameter is required' },
@@ -16,7 +15,6 @@ export async function GET(_req, { params }) {
   }
 
   try {
-    /* 2 ── Get user → grab its Org_ID */
     const user = await prisma.users.findUnique({
       where: { id: userId },
       select: { Org_ID: true },
@@ -46,7 +44,6 @@ export async function GET(_req, { params }) {
       );
     }
 
-    /* 4 ── Success */
     return NextResponse.json(organisation, { status: 200 });
   } catch (err) {
     console.error('[GET /api/organization/:userId] →', err);

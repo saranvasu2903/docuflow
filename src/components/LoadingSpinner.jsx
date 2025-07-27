@@ -1,14 +1,21 @@
 "use client";
 
 export default function LoadingSpinner() {
-   return (
-    <main className="p-6 animate-pulse space-y-6">
-      <div className="h-10 w-2/3 rounded-lg bg-base-200" />
-      <div className="space-y-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-6 w-full rounded-md bg-base-200" />
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-[2px] bg-black/20">
+      <div className="flex items-end space-x-1 h-10">
+        {[0, 1, 2, 3, 4].map((i) => (
+          <span
+            key={i}
+            className="w-1 rounded bg-orange-loader animate-wave-bar"
+            style={{
+              animationDelay: `${i * 0.1}s`,
+              animationDuration: "1.2s",
+              height: "100%",
+            }}
+          ></span>
         ))}
       </div>
-    </main>
+    </div>
   );
 }
