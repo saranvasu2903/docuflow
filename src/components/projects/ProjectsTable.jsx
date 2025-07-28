@@ -24,17 +24,14 @@ const ProjectsTable = React.memo(({ onAdd, onEdit }) => {
     isError: projectsError,
   } = useGetProjectsByOrg(organizationId, {
     enabled: !!organizationId && isLoaded,
-    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
-    cacheTime: 15 * 60 * 1000, // Keep cache for 15 minutes
+    staleTime: 10 * 60 * 1000, 
+    cacheTime: 15 * 60 * 1000, 
     refetchOnWindowFocus: false,
   });
 
+
   if (!isLoaded || projectsLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (projectsError) {

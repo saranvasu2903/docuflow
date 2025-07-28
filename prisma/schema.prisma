@@ -21,7 +21,6 @@ model users {
   orgrole         String?
   project_members project_members[]
   documents       documents[]
-  
 
   @@map("users")
 }
@@ -153,4 +152,30 @@ model documents_files {
   document   documents @relation(fields: [documentid], references: [id])
 
   @@map("documents_files")
+}
+
+model role {
+  id              Int     @id @default(autoincrement())
+  organization_id String
+  name            String
+  is_active       Boolean @default(true)
+  modules module[]
+  @@map("role")
+}
+
+model module {
+  id      Int    @id @default(autoincrement())
+  role_id Int
+  name    String
+  role        role         @relation(fields: [role_id], references: [id])
+  permissions permission[]
+  @@map("module")
+}
+
+model permission {
+  id        Int    @id @default(autoincrement())
+  module_id Int
+  name      String
+  module module @relation(fields: [module_id], references: [id])
+  @@map("permission")
 }

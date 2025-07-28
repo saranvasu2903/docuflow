@@ -14,7 +14,7 @@ export default function ViewTaskDrawer({ open, setOpen, task }) {
   if (!task) return null;
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={setOpen} className= "custom-drawer-content">
       <SheetContent side="right" className="w-full custom-drawer-content">
         <SheetHeader>
           <SheetTitle className="text-xl">📄 Task Details</SheetTitle>
@@ -24,7 +24,7 @@ export default function ViewTaskDrawer({ open, setOpen, task }) {
           </SheetDescription>
         </SheetHeader>
 
-        <div className=" space-y-6 text-sm p-5 overflow-y-auto max-h-[calc(100vh-150px)]">
+        <div className="space-y-6 text-sm p-5">
           <div className="flex flex-col space-y-1">
             <label className="text-muted-foreground font-medium">
               Project Name

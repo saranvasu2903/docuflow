@@ -11,6 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { useSelector } from "react-redux";
 import { useGetTeamleadTasks } from "@/hooks/teamlead"; 
+import LoadingSpinner from "../LoadingSpinner"; // Import the LoadingSpinner component
 
 export default function AssignedTasksTable({ onAssignClick }) {
   const [selectedTask, setSelectedTask] = useState(null);
@@ -26,6 +27,11 @@ export default function AssignedTasksTable({ onAssignClick }) {
     setDrawerOpen(true);
   };
 
+  // Render LoadingSpinner while isLoading is true
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <>
       <div className="rounded-xl border bg-white shadow">
@@ -40,11 +46,7 @@ export default function AssignedTasksTable({ onAssignClick }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={5}>Loading...</TableCell>
-              </TableRow>
-            ) : isError ? (
+            {isError ? (
               <TableRow>
                 <TableCell colSpan={5}>Error loading tasks</TableCell>
               </TableRow>

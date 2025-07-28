@@ -1,15 +1,24 @@
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Users, Pencil } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
-export default function EmployeesTable({ teamMembers, isTeamLoading, isAdmin, onEdit, onAdd }) {
+export default function EmployeesTable({
+  teamMembers,
+  isTeamLoading,
+  isAdmin,
+  onEdit,
+  onAdd,
+}) {
   if (isTeamLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (!teamMembers?.length) {
@@ -18,9 +27,7 @@ export default function EmployeesTable({ teamMembers, isTeamLoading, isAdmin, on
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 mb-4">
           <Users className="h-5 w-5 text-gray-500" />
         </div>
-        <h3 className="text-gray-900 text-sm font-medium">
-          No team members
-        </h3>
+        <h3 className="text-gray-900 text-sm font-medium">No team members</h3>
         <p className="text-gray-500 mt-1">
           Get started by adding a new team member
         </p>
@@ -51,16 +58,23 @@ export default function EmployeesTable({ teamMembers, isTeamLoading, isAdmin, on
       </TableHeader>
       <TableBody>
         {teamMembers.map((member) => (
-          <TableRow key={member.id} className="hover:bg-muted/40 transition-colors">
+          <TableRow
+            key={member.id}
+            className="hover:bg-muted/40 transition-colors"
+          >
             <TableCell>
               <div className="flex items-center gap-3">
                 <img
                   src={
                     member.userDetails?.fulldata?.imageUrl ||
-                    `https://ui-avatars.com/api/?name=${encodeURIComponent(member.fullname || "?")}&background=random`
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      member.fullname || "?"
+                    )}&background=random`
                   }
                   onError={(e) => {
-                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.fullname || "?")}&background=random`;
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      member.fullname || "?"
+                    )}&background=random`;
                   }}
                   alt="avatar"
                   className="w-10 h-10 rounded-full object-cover border shadow-sm"
@@ -70,7 +84,8 @@ export default function EmployeesTable({ teamMembers, isTeamLoading, isAdmin, on
                     {member.fullname || "—"}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {member.userDetails?.fulldata?.primaryEmailAddress?.emailAddress || member.email}
+                    {member.userDetails?.fulldata?.primaryEmailAddress
+                      ?.emailAddress || member.email}
                   </div>
                 </div>
               </div>
@@ -78,14 +93,19 @@ export default function EmployeesTable({ teamMembers, isTeamLoading, isAdmin, on
             <TableCell>{member.email}</TableCell>
             <TableCell>{member.userDetails?.role || "—"}</TableCell>
             <TableCell>
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                member.status?.toLowerCase() === "active"
-                  ? "bg-green-100 text-green-700"
-                  : member.status?.toLowerCase() === "inactive"
-                  ? "bg-gray-100 text-gray-700"
-                  : "bg-amber-100 text-amber-700"
-              }`}>
-                {member.status ? member.status.charAt(0).toUpperCase() + member.status.slice(1) : "—"}
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  member.status?.toLowerCase() === "active"
+                    ? "bg-green-100 text-green-700"
+                    : member.status?.toLowerCase() === "inactive"
+                    ? "bg-gray-100 text-gray-700"
+                    : "bg-amber-100 text-amber-700"
+                }`}
+              >
+                {member.status
+                  ? member.status.charAt(0).toUpperCase() +
+                    member.status.slice(1)
+                  : "—"}
               </span>
             </TableCell>
             {isAdmin && (

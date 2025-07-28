@@ -15,7 +15,7 @@ import {
 } from "@/hooks/teammembers";
 import { useGetOrganization } from "@/hooks/organization";
 
-import LoadingSpinner from "@/components/LoadingSpinner";
+// import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Employees() {
   const { user, isLoaded } = useUser();
@@ -158,13 +158,13 @@ export default function Employees() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [sidebarOpen]);
 
-  if (!isLoaded || isOrgLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner />
-      </div>
-    );
-  }
+  // if (!isLoaded || isOrgLoading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-64">
+  //       <LoadingSpinner />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="w-full mx-auto p-6 bg-white">

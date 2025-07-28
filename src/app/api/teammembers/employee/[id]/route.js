@@ -8,7 +8,6 @@ export async function PATCH(req, { params }) {
   const { fullname, status, role } = await req.json();
 
   try {
-    // Get the teammember record
     const teammember = await prisma.teammember.findUnique({
       where: { id: teammemberId },
     });
@@ -19,7 +18,6 @@ export async function PATCH(req, { params }) {
 
     const email = teammember.email;
 
-    // Update teammember table
     await prisma.teammember.update({
       where: { id: teammemberId },
       data: {
@@ -28,7 +26,6 @@ export async function PATCH(req, { params }) {
       },
     });
 
-    // Update users table based on email
     await prisma.users.updateMany({
       where: { email },
       data: {

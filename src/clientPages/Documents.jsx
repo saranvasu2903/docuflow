@@ -350,71 +350,71 @@ function FileIcon({ extension }) {
   }
 }
 
-export default function DocumentsPage() {
-  const { documents, isLoading } = useGetUploadedDocument();
-  const [selected, setSelected] = useState([]);
-  const [uploadDrawer, setUploadDrawer] = useState(false);
-  const [expandedRow, setExpandedRow] = useState(null);
-  const { role, organizationId } = useSelector((state) => ({
-    role: state.user.role,
-    organizationId: state.user.organizationId,
-  }));
+  export default function DocumentsPage() {
+    const { documents, isLoading } = useGetUploadedDocument();
+    const [selected, setSelected] = useState([]);
+    const [uploadDrawer, setUploadDrawer] = useState(false);
+    const [expandedRow, setExpandedRow] = useState(null);
+    const { role, organizationId } = useSelector((state) => ({
+      role: state.user.role,
+      organizationId: state.user.organizationId,
+    }));
 
-  const {
-    projects,
-    isLoading: projectsLoading,
-    isError: projectsError,
-  } = useGetProjectsByOrg(organizationId, {
-    enabled: !!organizationId,
-    staleTime: 10 * 60 * 1000,
-    cacheTime: 15 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
+    const {
+      projects,
+      isLoading: projectsLoading,
+      isError: projectsError,
+    } = useGetProjectsByOrg(organizationId, {
+      enabled: !!organizationId,
+      staleTime: 10 * 60 * 1000,
+      cacheTime: 15 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    });
 
-  const toggleRow = (id) => setExpandedRow((prev) => (prev === id ? null : id));
+    const toggleRow = (id) => setExpandedRow((prev) => (prev === id ? null : id));
 
-  const handleUpload = () => {
-    setUploadDrawer(false);
-  };
+    const handleUpload = () => {
+      setUploadDrawer(false);
+    };
 
-  if (projectsError) {
+    if (projectsError) {
+      return (
+        <div className="p-6 text-red-500">
+          Error loading projects. Please try again later.
+        </div>
+      );
+    }
+
+    if (isLoading || projectsLoading) {
+      return <LoadingSpinner />;
+    }
+
     return (
-      <div className="p-6 text-red-500">
-        Error loading projects. Please try again later.
+      <div className="p-4">
+        <Header openUploadDrawer={() => setUploadDrawer(true)} />
+
+        <div>
+          <div className="overflow-x-auto">
+            <DocumentTable
+              docs={documents || []}
+              expandedRow={expandedRow}
+              onToggleRow={toggleRow}
+              selected={selected}
+              onSelect={setSelected}
+            />
+          </div>
+        </div>
+
+        <Sheet open={uploadDrawer} onOpenChange={setUploadDrawer}>
+          <SheetContent side="right" className="custom-drawer-content">
+            <DocumentUploadDrawer
+              open={uploadDrawer}
+              onOpenChange={setUploadDrawer}
+              onUpload={handleUpload}
+              projects={projects || []}
+            />
+          </SheetContent>
+        </Sheet>
       </div>
     );
   }
-
-  if (isLoading || projectsLoading) {
-    return <LoadingSpinner />;
-  }
-
-  return (
-    <div className="p-4">
-      <Header openUploadDrawer={() => setUploadDrawer(true)} />
-
-      <div>
-        <div className="overflow-x-auto">
-          <DocumentTable
-            docs={documents || []}
-            expandedRow={expandedRow}
-            onToggleRow={toggleRow}
-            selected={selected}
-            onSelect={setSelected}
-          />
-        </div>
-      </div>
-
-      <Sheet open={uploadDrawer} onOpenChange={setUploadDrawer}>
-        <SheetContent side="right" className="custom-drawer-content">
-          <DocumentUploadDrawer
-            open={uploadDrawer}
-            onOpenChange={setUploadDrawer}
-            onUpload={handleUpload}
-            projects={projects || []}
-          />
-        </SheetContent>
-      </Sheet>
-    </div>
-  );
-}

@@ -6,6 +6,7 @@ import VendorSettings from "@/components/settings/VendorSettings";
 import AppSettings from "@/components/settings/AppSettings";
 import DateTimeSettings from "@/components/settings/DateTimeSettings";
 import PrivacySettings from "@/components/settings/PrivacySettings";
+import RolesManagement from "@/components/settings/RolesManagement";
 
 const Settings = () => {
   const { role } = useSelector((state) => state.user);
@@ -20,6 +21,7 @@ const Settings = () => {
     { id: "app", label: "App Settings" },
     { id: "datetime", label: "Date & Time" },
     { id: "privacy", label: "Privacy & Security" },
+    { id: "role and permission", label: "Roles & permission" },
   ];
 
   return (
@@ -32,11 +34,12 @@ const Settings = () => {
             {activeTab === "app" && <AppSettings />}
             {activeTab === "datetime" && <DateTimeSettings />}
             {activeTab === "privacy" && <PrivacySettings />}
+            {activeTab === "role and permission" && <RolesManagement />}
           </div>
         </div>
       </div>
       <aside className="w-[20%] p-6 flex flex-col shadow-xl">
-        <h2 className="text-white text-2xl font-bold mb-8 pl-3">Settings</h2>
+        <h2 className="text-black text-2xl font-bold mb-8 pl-3">Settings</h2>
         <nav className="flex-1 space-y-1">
           {sidebarItems.map((item) => (
             <button
@@ -46,8 +49,8 @@ const Settings = () => {
                 transition-all duration-300
                 ${
                   activeTab === item.id
-                    ? "bg-white/20 text-white backdrop-blur-md shadow-md"
-                    : "text-white/80 hover:bg-white/10 hover:text-white"
+                    ? "bg-white/20 text-black backdrop-blur-md shadow-md"
+                    : "text-/80 hover:bg-white/10 hover:text-black"
                 }
               `}
               onClick={() => setActiveTab(item.id)}

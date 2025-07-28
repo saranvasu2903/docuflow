@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useCreateProject, useGetusers } from '@/hooks/projects';
-import LoadingSpinner from '../LoadingSpinner';
+// import LoadingSpinner from '../LoadingSpinner';
 
 const AddProjectDrawer = React.memo(({ isOpen, onClose }) => {
   const { user } = useUser();
@@ -95,13 +95,13 @@ const AddProjectDrawer = React.memo(({ isOpen, onClose }) => {
     });
   };
 
-  if (usersLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <LoadingSpinner />
-      </div>
-    );
-  }
+  // if (usersLoading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-full">
+  //       <LoadingSpinner />
+  //     </div>
+  //   );
+  // }
 
   if (usersError) {
     return (

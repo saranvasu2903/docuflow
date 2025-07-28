@@ -6,7 +6,7 @@ import { ChevronDown, ChevronUp, Download } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner"; // Adjust the import path as needed
 
 export default function DocumentTable({ docs, expandedRow, onToggleRow }) {
-  // Show loading spinner if docs is undefined or empty
+ 
   if (!docs || docs.length === 0) {
     return <LoadingSpinner />;
   }
@@ -15,7 +15,7 @@ export default function DocumentTable({ docs, expandedRow, onToggleRow }) {
     <Table className="">
       <TableHeader>
         <TableRow>
-          <TableHead /> {/* Caret */}
+          <TableHead /> 
           <TableHead>Project Name</TableHead>
           <TableHead>Uploaded By</TableHead>
           <TableHead>Due Date</TableHead>
