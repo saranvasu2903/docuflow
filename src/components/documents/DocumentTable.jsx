@@ -1,6 +1,6 @@
 "use client";
 
-import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/table";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Download } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner"; // Adjust the import path as needed
@@ -12,7 +12,7 @@ export default function DocumentTable({ docs, expandedRow, onToggleRow }) {
   }
 
   return (
-    <Table className="">
+    <Table >
       <TableHeader>
         <TableRow>
           <TableHead /> 

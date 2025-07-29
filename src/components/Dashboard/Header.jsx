@@ -5,7 +5,7 @@ import { Bell } from "lucide-react";
 export function Header({ className }) {
   return (
     <header
-      className={`bg-white border-b border-gray-100 h-16 flex items-center px-6 ${className}`}
+      className={`bg-[#f4f1eb] h-16 flex items-center px-6 ${className}`}
     >
       <nav className="flex-1" />
       <div className="flex items-center gap-5">

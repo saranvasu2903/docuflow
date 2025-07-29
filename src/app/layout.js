@@ -38,7 +38,7 @@ export default function RootLayout({ children }) {
       afterSignOutUrl="/"
     >
       <html lang="en" data-theme="light">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white`}>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f4f1eb]`}>
           <Provider store={store}>
             <QueryProvider>
               <AuthGuard>
@@ -49,14 +49,14 @@ export default function RootLayout({ children }) {
                     {children}
                   </div>
                 ) : (
-                  <div className="flex h-screen">F
+                  <div className="flex h-screen">
                     <Sidebar className="w-20 h-full fixed left-0 top-0" />
 
                     <div className="flex-1 flex flex-col ml-20">
 
                       <Header className="h-16 flex-shrink-0" />
 
-                      <main className="flex-1 overflow-y-auto bg-white">
+                      <main className="flex-1 overflow-y-auto bg-[#f4f1eb] rounded-2xl">
                         <Toaster position="bottom-right" reverseOrder={false} />
                         {children}
                       </main>

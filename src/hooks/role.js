@@ -8,7 +8,7 @@ export function useCreateRole() {
       return await post("/role", payload);
     },
     onSuccess: () => {
-    //   toast.success("Role created successfully!");
+      //   toast.success("Role created successfully!");
     },
     onError: (error) => {
       console.error("Error creating role:", error);
@@ -22,7 +22,7 @@ export function useGetRoles() {
   const query = useQuery({
     queryKey: ["roles"],
     queryFn: async () => {
-      return await get("/role"); 
+      return await get("/role");
     },
     onError: (error) => {
       console.error("Error fetching roles:", error);
@@ -44,9 +44,24 @@ export function useUpdateRolePermissions() {
     },
     onError: (error) => {
       console.error("Error updating role permissions:", error);
-    //   toast.error(error?.message || "Failed to update role permissions.");
+      //   toast.error(error?.message || "Failed to update role permissions.");
     },
   });
 
   return mutation;
+}
+
+export function useGetEmployeeRoles() {
+  const query = useQuery({
+    queryKey: ["roles"],
+    queryFn: async () => {
+      return await get("/role/employee-role");
+    },
+    onError: (error) => {
+      console.error("Error fetching roles:", error);
+      toast.error(error.message || "Failed to fetch roles.");
+    },
+  });
+
+  return query;
 }
