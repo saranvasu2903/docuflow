@@ -2,7 +2,7 @@
 
 export function Table({ children, className = "" }) {
   return (
-    <div className="w-full overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className="w-full overflow-x-auto rounded-2xl border-none bg-[#f4f1eb] ">
       <table
         className={`min-w-full text-sm text-left ${className}`}
       >
@@ -14,7 +14,7 @@ export function Table({ children, className = "" }) {
 
 export function TableHeader({ children }) {
   return (
-    <thead className="bg-[#cfc7b5] text-xs font-semibold uppercase text-[#25262b] rounded-xl border-none">
+    <thead className="bg-[#25262b] text-xs font-semibold uppercase text-white rounded-2xl border-none">
       {children}
     </thead>
   );
@@ -22,7 +22,7 @@ export function TableHeader({ children }) {
 
 export function TableBody({ children }) {
   return (
-    <tbody className="divide-y divide-gray-100 text-[#25262b]">
+    <tbody className="divide-y divide-white text-[#25262b]">
       {children}
     </tbody>
   );
@@ -31,7 +31,7 @@ export function TableBody({ children }) {
 export function TableRow({ children, className = "" }) {
   return (
     <tr
-      className={`hover:bg-[#f4f1eb] transition-colors duration-150 ease-in-out ${className}`}
+      className={` transition-colors duration-150 ease-in-out  ${className}`}
     >
       {children}
     </tr>
@@ -42,7 +42,7 @@ export function TableHead({ children, className = "" }) {
   return (
     <th
       scope="col"
-      className={`px-6 py-4 font-semibold tracking-wide text-[#25262b] ${className}`}
+      className={`px-6 py-4 font-semibold tracking-wide text-white ${className}`}
     >
       {children}
     </th>

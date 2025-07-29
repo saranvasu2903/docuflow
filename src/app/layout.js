@@ -56,7 +56,7 @@ export default function RootLayout({ children }) {
 
                       <Header className="h-16 flex-shrink-0" />
 
-                      <main className="flex-1 overflow-y-auto bg-[#f4f1eb] rounded-2xl">
+                      <main className="flex-1 overflow-y-auto bg-white rounded-2xl mr-4 mb-4">
                         <Toaster position="bottom-right" reverseOrder={false} />
                         {children}
                       </main>

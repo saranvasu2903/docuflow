@@ -7,7 +7,7 @@ export default function LoadingSpinner() {
         {[0, 1, 2, 3, 4].map((i) => (
           <span
             key={i}
-            className="w-1 rounded bg-orange-loader animate-wave-bar"
+            className="w-1 rounded bg-gray-loader animate-wave-bar"
             style={{
               animationDelay: `${i * 0.1}s`,
               animationDuration: "1.2s",

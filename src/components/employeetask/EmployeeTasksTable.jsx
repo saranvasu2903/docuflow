@@ -16,7 +16,7 @@ export default function EmployeeTasksTable({ tasks, onUploadClick, onStatusChang
   const statusOptions = ['Pending', 'In Progress', 'Completed']
 
   return (
-    <div className="rounded-xl border bg-white shadow-sm overflow-hidden">
+    <div className="rounded-xl  bg-white  overflow-hidden">
       <Table>
         <TableHeader className="bg-muted">
           <TableRow>

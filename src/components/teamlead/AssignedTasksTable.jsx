@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
+} from "@/components/table";
 import { Button } from "../ui/button";
 import { useSelector } from "react-redux";
 import { useGetTeamleadTasks } from "@/hooks/teamlead"; 
@@ -27,14 +27,13 @@ export default function AssignedTasksTable({ onAssignClick }) {
     setDrawerOpen(true);
   };
 
-  // Render LoadingSpinner while isLoading is true
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
   return (
     <>
-      <div className="rounded-xl border bg-white shadow">
+      <div className="rounded-xl  bg-white ">
         <Table>
           <TableHeader>
             <TableRow>

@@ -151,7 +151,7 @@
     animation: wave-bar 1.2s ease-in-out infinite;
   }
 
-  .bg-orange-loader {
-    background-color: #fe4f02;
+  .bg-gray-loader {
+    background-color: #25262b;
   }
 }

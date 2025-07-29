@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { useSelector } from 'react-redux';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table';
 import { Plus, Pencil } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { useGetProjectsByOrg } from '@/hooks/projects';

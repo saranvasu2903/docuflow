@@ -13,6 +13,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useSignOut } from "@/utils/auth";
+import { useSelector } from "react-redux";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: Home },
@@ -26,13 +27,14 @@ const navItems = [
 export function Sidebar({ className = "" }) {
   const pathname = usePathname();
   const signOut = useSignOut();
-
+  const { fullName, imageUrl } = useSelector((state) => state.user);
   return (
     <aside
       className={`fixed h-screen w-16 bg-[#f4f1eb] flex flex-col items-center py-4 ${className}`}
     >
+      
       <nav className="flex-1 w-full flex flex-col items-center space-y-2 p-2">
-        <ul className="space-y-4 w-full p-2 bg-white rounded-full">
+        <ul className="space-y-4 w-full p-2 bg-white rounded-full mt-10">
           {navItems.map(({ label, href, icon: Icon }) => {
             const isActive = pathname === href;
             return (
@@ -41,8 +43,8 @@ export function Sidebar({ className = "" }) {
                   href={href}
                   className={`group flex items-center justify-center w-12 h-12 rounded-full ${
                     isActive
-                      ? "bg-orange-500 text-white"
-                      : "text-gray-500 hover:bg-gray-200"
+                      ? "bg-[#25262b] text-white"
+                      : "text-black hover:bg-[#e3e0d7]"
                   }`}
                   title={label}
                 >

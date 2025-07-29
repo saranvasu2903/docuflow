@@ -237,7 +237,7 @@ const VendorSettings = () => {
   if (isError) return <div className="text-red-500 text-center py-10">Failed to load organization data</div>;
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-sm">
+    <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl ">
       <div className="flex justify-between items-center mb-8 pb-6 border-b border-gray-100">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Organization Settings</h2>
@@ -245,7 +245,7 @@ const VendorSettings = () => {
         </div>
         <button
           type="submit"
-          className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium rounded-lg hover:from-purple-700 hover:to-blue-600 transition-all shadow-md hover:shadow-lg disabled:opacity-70"
+          className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium rounded-lg hover:from-purple-700 hover:to-blue-600 transition-all  disabled:opacity-70"
           disabled={isUpdating}
         >
           {isUpdating ? (

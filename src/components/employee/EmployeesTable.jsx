@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/table";
 import { Users, Pencil } from "lucide-react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
@@ -46,7 +46,7 @@ export default function EmployeesTable({
   }
 
   return (
-    <Table className="min-w-full border rounded-xl overflow-hidden shadow-sm bg-white">
+    <Table >
       <TableHeader className="bg-muted">
         <TableRow>
           <TableHead>Member</TableHead>
@@ -77,7 +77,7 @@ export default function EmployeesTable({
                     )}&background=random`;
                   }}
                   alt="avatar"
-                  className="w-10 h-10 rounded-full object-cover border shadow-sm"
+                  className="w-10 h-10 rounded-full object-cover border "
                 />
                 <div>
                   <div className="font-medium text-gray-900">
