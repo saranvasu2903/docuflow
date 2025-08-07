@@ -13,38 +13,89 @@ import {
   LogOut,
 } from "lucide-react";
 import { useSignOut } from "@/utils/auth";
+import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 
 const navItems = [
-  { label: "Dashboard", href: "/dashboard", icon: Home },
-  { label: "Documents", href: "/documents", icon: FileText },
-  { label: "Projects", href: "/projects", icon: FolderKanban },
-  { label: "Teamlead Task", href: "/teamlead-task", icon: ListChecks },
-  { label: "Employee Task", href: "/employee-task", icon: ClipboardList },
-  { label: "Employee", href: "/employee", icon: Users },
+  {
+    label: "Projects",
+    href: "/projects",
+    icon: FolderKanban,
+    module: "projects",
+  },
+  {
+    label: "Documents",
+    href: "/documents",
+    icon: FileText,
+    module: "documents",
+  },
+  {
+    label: "Teamlead Task",
+    href: "/teamlead-task",
+    icon: ListChecks,
+    module: "teamlead-task",
+  },
+  // {
+  //   label: "Employee Task",
+  //   href: "/employee-task",
+  //   icon: ClipboardList,
+  //   module: "employee-task",
+  // },
+  { label: "Employee", href: "/employee", icon: Users, module: "employee" },
 ];
 
 export function Sidebar({ className = "" }) {
+  const permission = useSelector((state) => state.user.permission);
+
   const pathname = usePathname();
   const signOut = useSignOut();
-  const { fullName, imageUrl } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    // console.log("User Permissions from Redux:", permission);
+  }, [permission]);
+
+  const visibleNavItems = useMemo(() => {
+    if (!Array.isArray(permission)) return [];
+
+    return navItems.filter((item) => {
+      const found = permission.find((perm) => perm.module === item.module);
+      return found?.actions.includes("view");
+    });
+  }, [permission]);
+
+  const hasViewPermission = (moduleName) => {
+    const found = permission.find((perm) => perm.module === moduleName);
+    return found?.actions.includes("view");
+  };
+
   return (
     <aside
-      className={`fixed h-screen w-16 bg-[#f4f1eb] flex flex-col items-center py-4 ${className}`}
+      className={`fixed h-screen w-16 bg-[#f4f1eb] flex flex-col items-center ${className}`}
     >
-      
       <nav className="flex-1 w-full flex flex-col items-center space-y-2 p-2">
-        <ul className="space-y-4 w-full p-2 bg-white rounded-full mt-10">
-          {navItems.map(({ label, href, icon: Icon }) => {
+        <div className="flex flex-col items-center w-full space-y-4 p-2 bg-white rounded-full">
+          <Link
+            href="/dashboard"
+            className={`group flex items-center justify-center w-12 h-12 rounded-full ${
+              pathname.startsWith("/dashboard")
+                ? "bg-nav-active"
+                : "text-black bg-nav-hover"
+            }`}
+            title="Dashboard"
+          >
+            <Home className="h-5 w-5" />
+          </Link>
+        </div>
+
+        <ul className="space-y-3 w-full p-2 bg-white rounded-full">
+          {visibleNavItems.map(({ label, href, icon: Icon }) => {
             const isActive = pathname === href;
             return (
               <li key={href} className="flex justify-center">
                 <Link
                   href={href}
                   className={`group flex items-center justify-center w-12 h-12 rounded-full ${
-                    isActive
-                      ? "bg-[#25262b] text-white"
-                      : "text-black hover:bg-[#e3e0d7]"
+                    isActive ? "bg-nav-active" : "text-black bg-nav-hover"
                   }`}
                   title={label}
                 >
@@ -55,21 +106,24 @@ export function Sidebar({ className = "" }) {
           })}
         </ul>
 
-        <div className="flex flex-col items-center w-full space-y-4 p-2 bg-white rounded-full">
-          <Link
-            href="/settings"
-            className={`group flex items-center justify-center w-12 h-12 rounded-full ${
-              pathname.startsWith("/settings")
-                ? "bg-orange-500 text-white"
-                : "text-gray-600 hover:bg-gray-200"
-            }`}
-            title="Settings"
-          >
-            <Settings className="h-5 w-5" />
-          </Link>
+        <div className="flex flex-col items-center w-full space-y-3 p-2 bg-white rounded-full">
+          {hasViewPermission("settings") && (
+            <Link
+              href="/settings"
+              className={`group flex items-center justify-center w-12 h-12 rounded-full ${
+                pathname.startsWith("/settings")
+                  ? "bg-nav-active"
+                  : "text-black bg-nav-hover"
+              }`}
+              title="Settings"
+            >
+              <Settings className="h-5 w-5" />
+            </Link>
+          )}
+
           <button
             onClick={signOut}
-            className="flex items-center justify-center w-10 h-10 rounded-full text-gray-600 hover:bg-gray-200"
+            className="flex items-center justify-center w-12 h-12 rounded-full text-black bg-nav-hover cursor-pointer"
             title="Logout"
           >
             <LogOut className="h-5 w-5" />

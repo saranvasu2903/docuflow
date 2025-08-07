@@ -19,9 +19,18 @@ import { Provider } from "react-redux";
 import { store } from "@/store";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
-const publicRoutes = ["/", "/sign-in", "/sign-up", "/onboarding", "/subscription"];
+const publicRoutes = [
+  "/",
+  "/sign-in",
+  "/sign-up",
+  "/onboarding",
+  "/subscription",
+];
 
 export default function RootLayout({ children }) {
   const router = useRouter();
@@ -30,20 +39,22 @@ export default function RootLayout({ children }) {
 
   return (
     <ClerkProvider
-      navigate={to => router.push(to)}
+      navigate={(to) => router.push(to)}
       signInUrl="/sign-in"
       signUpUrl="/sign-up"
-      afterSignInUrl="/"
-      afterSignUpUrl="/"
-      afterSignOutUrl="/"
+      afterSignInUrl="/dashboard"
+      afterSignUpUrl="/onboarding"
+      afterSignOutUrl="/sign-in"
     >
       <html lang="en" data-theme="light">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f4f1eb]`}>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f4f1eb]`}
+        >
           <Provider store={store}>
             <QueryProvider>
               <AuthGuard>
                 <UserSyncProvider />
-                
+
                 {isPublic ? (
                   <div className="min-h-screen flex items-center justify-center">
                     {children}
@@ -52,12 +63,11 @@ export default function RootLayout({ children }) {
                   <div className="flex h-screen">
                     <Sidebar className="w-20 h-full fixed left-0 top-0" />
 
-                    <div className="flex-1 flex flex-col ml-20">
+                    <div className="flex-1 flex flex-col ml-20 mr-3">
+                      <Header className="h-20 flex-shrink-0 " />
 
-                      <Header className="h-16 flex-shrink-0" />
-
-                      <main className="flex-1 overflow-y-auto bg-white rounded-2xl mr-4 mb-4">
-                        <Toaster position="bottom-right" reverseOrder={false} />
+                      <main className="flex-1 overflow-y-auto bg-white rounded-4xl mb-4">
+                        <Toaster position="top-center" reverseOrder={false} />
                         {children}
                       </main>
                     </div>

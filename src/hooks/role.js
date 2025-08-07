@@ -65,3 +65,22 @@ export function useGetEmployeeRoles() {
 
   return query;
 }
+
+export function useGetRoleDetails(roleId) {
+  const query = useQuery({
+    queryKey: ["roleDetails", roleId],
+    queryFn: () => {
+      if (roleId === undefined || roleId === null) {
+        throw new Error("Missing roleId param");
+      }
+      return get(`/role/${roleId}`);
+    },
+    enabled: roleId !== undefined && roleId !== null,
+    onError: (error) => {
+      console.error("Error fetching role details:", error);
+      toast.error("Failed to fetch role details.");
+    },
+  });
+
+  return query;
+}

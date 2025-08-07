@@ -476,7 +476,7 @@ const OrganizationSettings = () => {
                     <div className="mt-6 flex justify-end">
                       <button
                         type="submit"
-                        className="btn btn-primary rounded-full"
+                        className=" rounded-full"
                         disabled={isUpdating || form.isSubmitting}
                       >
                         {isUpdating || form.isSubmitting

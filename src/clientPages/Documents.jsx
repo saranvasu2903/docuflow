@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useGetUploadedDocument } from "@/hooks/documents";
@@ -33,6 +33,7 @@ import {
 import { useGetProjectsByOrg } from "@/hooks/projects";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { useGetRoles } from "@/hooks/role";
 
 function Header({ openUploadDrawer }) {
   return (
@@ -61,13 +62,23 @@ function DocumentUploadDrawer({ open, onOpenChange, onUpload, projects }) {
   const { uploadDocument, isUploading } = useUploadDocument();
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
   const uploadedby = useSelector((state) => state.user.userId);
+  const { data: roles } = useGetRoles();
+  const teamLeadRoleId = useMemo(() => {
+    if (!roles?.data) return null;
+    const role = roles.data.find(
+      (r) => r.roleName.toLowerCase() === "team lead"
+    );
+    return role?.id;
+  }, [roles]);
 
   const selectedProject = projects.find((p) => p.id === projectId);
-  const teamLeads = selectedProject
-    ? selectedProject.project_members.filter(
-        (member) => member.users.role === "team lead"
-      )
-    : [];
+
+  const teamLeads = useMemo(() => {
+    if (!selectedProject || !teamLeadRoleId) return [];
+    return selectedProject.project_members.filter(
+      (member) => Number(member.users.role) === teamLeadRoleId
+    );
+  }, [selectedProject, teamLeadRoleId]);
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files).filter((file) => {
       if (file.size > MAX_FILE_SIZE) {
@@ -98,7 +109,7 @@ function DocumentUploadDrawer({ open, onOpenChange, onUpload, projects }) {
     if (dueDate) formData.append("dueDate", dueDate.toISOString());
 
     // Append teamLead array
-    teamLead.forEach((id) => formData.append("teamlead", id)); // <-- key must match backend
+    teamLead.forEach((id) => formData.append("teamlead", id));
 
     files.forEach((file) => formData.append("files", file));
 
@@ -350,71 +361,71 @@ function FileIcon({ extension }) {
   }
 }
 
-  export default function DocumentsPage() {
-    const { documents, isLoading } = useGetUploadedDocument();
-    const [selected, setSelected] = useState([]);
-    const [uploadDrawer, setUploadDrawer] = useState(false);
-    const [expandedRow, setExpandedRow] = useState(null);
-    const { role, organizationId } = useSelector((state) => ({
-      role: state.user.role,
-      organizationId: state.user.organizationId,
-    }));
+export default function DocumentsPage() {
+  const { documents, isLoading } = useGetUploadedDocument();
+  const [selected, setSelected] = useState([]);
+  const [uploadDrawer, setUploadDrawer] = useState(false);
+  const [expandedRow, setExpandedRow] = useState(null);
+  const { role, organizationId } = useSelector((state) => ({
+    role: state.user.role,
+    organizationId: state.user.organizationId,
+  }));
 
-    const {
-      projects,
-      isLoading: projectsLoading,
-      isError: projectsError,
-    } = useGetProjectsByOrg(organizationId, {
-      enabled: !!organizationId,
-      staleTime: 10 * 60 * 1000,
-      cacheTime: 15 * 60 * 1000,
-      refetchOnWindowFocus: false,
-    });
+  const {
+    projects,
+    isLoading: projectsLoading,
+    isError: projectsError,
+  } = useGetProjectsByOrg(organizationId, {
+    enabled: !!organizationId,
+    staleTime: 10 * 60 * 1000,
+    cacheTime: 15 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 
-    const toggleRow = (id) => setExpandedRow((prev) => (prev === id ? null : id));
+  const toggleRow = (id) => setExpandedRow((prev) => (prev === id ? null : id));
 
-    const handleUpload = () => {
-      setUploadDrawer(false);
-    };
+  const handleUpload = () => {
+    setUploadDrawer(false);
+  };
 
-    if (projectsError) {
-      return (
-        <div className="p-6 text-red-500">
-          Error loading projects. Please try again later.
-        </div>
-      );
-    }
-
-    if (isLoading || projectsLoading) {
-      return <LoadingSpinner />;
-    }
-
+  if (projectsError) {
     return (
-      <div className="p-4">
-        <Header openUploadDrawer={() => setUploadDrawer(true)} />
-
-        <div>
-          <div className="overflow-x-auto">
-            <DocumentTable
-              docs={documents || []}
-              expandedRow={expandedRow}
-              onToggleRow={toggleRow}
-              selected={selected}
-              onSelect={setSelected}
-            />
-          </div>
-        </div>
-
-        <Sheet open={uploadDrawer} onOpenChange={setUploadDrawer}>
-          <SheetContent side="right" className="custom-drawer-content">
-            <DocumentUploadDrawer
-              open={uploadDrawer}
-              onOpenChange={setUploadDrawer}
-              onUpload={handleUpload}
-              projects={projects || []}
-            />
-          </SheetContent>
-        </Sheet>
+      <div className="p-6 text-red-500">
+        Error loading projects. Please try again later.
       </div>
     );
   }
+
+  if (isLoading || projectsLoading) {
+    return <LoadingSpinner />;
+  }
+
+  return (
+    <div className="p-4">
+      <Header openUploadDrawer={() => setUploadDrawer(true)} />
+
+      <div>
+        <div className="overflow-x-auto">
+          <DocumentTable
+            docs={documents || []}
+            expandedRow={expandedRow}
+            onToggleRow={toggleRow}
+            selected={selected}
+            onSelect={setSelected}
+          />
+        </div>
+      </div>
+
+      <Sheet open={uploadDrawer} onOpenChange={setUploadDrawer}>
+        <SheetContent side="right" className="custom-drawer-content">
+          <DocumentUploadDrawer
+            open={uploadDrawer}
+            onOpenChange={setUploadDrawer}
+            onUpload={handleUpload}
+            projects={projects || []}
+          />
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}

@@ -12,7 +12,7 @@ model users {
   id              String            @id
   email           String?
   fullname        String?
-  role            String            @default("admin")
+  role            String            @default("0")
   fulldata        Json?
   organizationid  Int?
   Org_ID          String?           @map("Org_ID")

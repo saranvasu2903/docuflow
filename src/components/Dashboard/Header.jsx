@@ -1,43 +1,51 @@
 "use client";
 
-import { Bell } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Bell, MailCheck } from "lucide-react";
+
+const navItems = [
+  { label: "Notification", href: "/events", icon: Bell },
+  { label: "Message", href: "/message", icon: MailCheck },
+];
 
 export function Header({ className }) {
+  const pathname = usePathname();
+
   return (
     <header
-      className={`bg-[#f4f1eb] h-16 flex items-center px-6 ${className}`}
+      className={`bg-[#f4f1eb] h-16 w-full flex justify-between items-center ${className}`}
     >
-      <nav className="flex-1" />
-      <div className="flex items-center gap-5">
-        {[{ icon: Bell, notification: true }].map(
-          ({ icon: Icon, notification }, idx) => (
-            <button
-              key={idx}
-              className="p-2 relative text-gray-400 hover:text-gray-800 transition-colors"
+      <nav className="flex w-full justify-end items-center py-2">
+        <ul className="flex space-x-3 p-2 bg-white rounded-full my-2">
+          {navItems.map(({ label, href, icon: Icon }) => {
+            const isActive = pathname === href;
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={`group flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
+                    isActive ? "bg-nav-active" : "text-black bg-nav-hover"
+                  }`}
+                  title={label}
+                >
+                  <Icon className="h-5 w-5" />
+                </Link>
+              </li>
+            );
+          })}
+
+          <li>
+            <Link
+              href="/dashboard"
+              className="group flex items-center justify-center w-12 h-12 bg-nav-active rounded-full font-semibold text-lg transition-colors"
+              title="Dashboard"
             >
-              <Icon className="h-5 w-5" />
-              {notification && (
-                <span className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full"></span>
-              )}
-            </button>
-          )
-        )}
-
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gray-200 rounded-full flex items-center justify-center">
-              <span className="text-sm text-black">✓</span>
-            </div>
-            <div className="text-sm font-medium text-black">
-              <p>Docuflow Brand</p>
-            </div>
-          </div>
-
-          <div className="w-9 h-9 rounded-full bg-[#fe4f02] flex items-center justify-center">
-            <span className="text-white font-bold text-xl leading-none">D</span>
-          </div>
-        </div>
-      </div>
+              D
+            </Link>
+          </li>
+        </ul>
+      </nav>
     </header>
   );
 }

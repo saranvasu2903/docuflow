@@ -46,7 +46,7 @@ export default function EmployeesTable({
   }
 
   return (
-    <Table >
+    <Table>
       <TableHeader className="bg-muted">
         <TableRow>
           <TableHead>Member</TableHead>
@@ -91,7 +91,7 @@ export default function EmployeesTable({
               </div>
             </TableCell>
             <TableCell>{member.email}</TableCell>
-            <TableCell>{member.userDetails?.role || "—"}</TableCell>
+            <TableCell>{member.userDetails?.roleName || "—"}</TableCell>
             <TableCell>
               <span
                 className={`px-2 py-1 rounded-full text-xs font-medium ${

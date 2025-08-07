@@ -2,10 +2,8 @@
 
 export function Table({ children, className = "" }) {
   return (
-    <div className="w-full overflow-x-auto rounded-2xl border-none bg-[#f4f1eb] ">
-      <table
-        className={`min-w-full text-sm text-left ${className}`}
-      >
+    <div className="w-full overflow-x-auto rounded-2xl border-none table-bg">
+      <table className={`min-w-full text-sm text-left ${className}`}>
         {children}
       </table>
     </div>
@@ -14,7 +12,7 @@ export function Table({ children, className = "" }) {
 
 export function TableHeader({ children }) {
   return (
-    <thead className="bg-[#25262b] text-xs font-semibold uppercase text-white rounded-2xl border-none">
+    <thead className="table-header text-xs font-semibold uppercase rounded-2xl border-none">
       {children}
     </thead>
   );
@@ -22,7 +20,7 @@ export function TableHeader({ children }) {
 
 export function TableBody({ children }) {
   return (
-    <tbody className="divide-y divide-white text-[#25262b]">
+    <tbody className="table-row-divider table-cell-text">
       {children}
     </tbody>
   );
@@ -30,9 +28,7 @@ export function TableBody({ children }) {
 
 export function TableRow({ children, className = "" }) {
   return (
-    <tr
-      className={` transition-colors duration-150 ease-in-out  ${className}`}
-    >
+    <tr className={`transition-colors duration-150 ease-in-out ${className}`}>
       {children}
     </tr>
   );
@@ -42,7 +38,7 @@ export function TableHead({ children, className = "" }) {
   return (
     <th
       scope="col"
-      className={`px-6 py-4 font-semibold tracking-wide text-white ${className}`}
+      className={`px-6 py-4 font-semibold tracking-wide table-head-text ${className}`}
     >
       {children}
     </th>
@@ -51,7 +47,7 @@ export function TableHead({ children, className = "" }) {
 
 export function TableCell({ children, className = "" }) {
   return (
-    <td className={`px-6 py-4 text-[#25262b] ${className}`}>
+    <td className={`px-6 py-4 table-cell-text ${className}`}>
       {children}
     </td>
   );

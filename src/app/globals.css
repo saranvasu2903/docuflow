@@ -123,11 +123,11 @@
 .custom-drawer-content {
   width: 50vw !important;
   max-width: none !important;
-  height: 100vh !important;       /* Ensure it matches full screen height */
-  max-height: 100vh !important;   /* Prevent content from overflowing vertically */
+  height: 100vh !important;       
+  max-height: 100vh !important;   
   z-index: 1000 !important;
-  overflow-y: auto !important;    /* Allow vertical scrolling */
-  overflow-x: visible !important; /* Show any horizontal overflow if needed */
+  overflow-y: auto !important;   
+  overflow-x: visible !important;
 }
 
 
@@ -152,6 +152,94 @@
   }
 
   .bg-gray-loader {
-    background-color: #25262b;
+    background-color:var(--btn-primary-bg);
   }
+}
+
+
+:root {
+  --btn-primary-bg: #00B098;
+  --btn-primary-hover-bg: rgb(6, 196, 170);
+    --table-bg: #f4f1eb;
+  --table-header-bg: var(--btn-primary-bg);
+  --table-header-text: #ffffff;
+  --table-row-text: #25262b;
+  --table-divider-color: #ffffff;
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1.2rem;
+  background-color: var(--btn-primary-bg);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+  background-color: var(--btn-primary-hover-bg);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+.bg-nav-active {
+  background-color:var(--btn-primary-bg);
+  color: white;
+}
+
+.bg-nav-hover:hover {
+  background-color: var(--btn-primary-hover-bg);
+    color: #ffffff;
+}
+
+.table-bg {
+  background-color: var(--table-bg);
+}
+
+.table-header {
+  background-color: var(--table-header-bg);
+  color: var(--table-header-text);
+}
+
+.table-cell-text {
+  color: var(--table-row-text);
+}
+
+.table-row-divider > tr + tr {
+  border-top: 1px solid var(--table-divider-color);
+}
+
+.table-head-text {
+  color: var(--table-header-text);
+}
+
+.table-body-gradient {
+  background: linear-gradient(
+    to bottom,
+    var(--table-bg-1),
+    var(--table-bg-2),
+    var(--table-bg-3),
+    var(--table-bg-4)
+  );
+}
+
+.div-body {
+  background-color: var(--table-header-bg); /* Or set your specific color */
+  color: #ffffff;
+}
+
+.selected-div-body{
+  color:var(--table-header-bg);
+  background-color:#ffffff
 }

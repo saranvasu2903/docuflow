@@ -3,12 +3,18 @@
 import React, { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
-import { useGetOrganization, useUpdateOrganization } from "@/hooks/organization";
+import {
+  useGetOrganization,
+  useUpdateOrganization,
+} from "@/hooks/organization";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Input } from "@/components/ui/input";
+import { Button } from "../ui/button";
 
 const SectionHeader = ({ title }) => (
-  <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-100">{title}</h3>
+  <h3 className="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-100">
+    {title}
+  </h3>
 );
 
 const FormField = ({ label, children, className = "" }) => (
@@ -138,16 +144,18 @@ const SocialMediaFields = ({ formValues, handleChange }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {[
         { platform: "facebook", icon: "👍" },
-        { platform: "instagram", icon: "📷" }, 
+        { platform: "instagram", icon: "📷" },
         { platform: "linkedin", icon: "💼" },
-        { platform: "x", icon: "𝕏" }
+        { platform: "x", icon: "𝕏" },
       ].map(({ platform, icon }) => (
         <FormField
           key={platform}
           label={
             <span className="flex items-center gap-2">
               <span>{icon}</span>
-              <span>{platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
+              <span>
+                {platform.charAt(0).toUpperCase() + platform.slice(1)}
+              </span>
             </span>
           }
         >
@@ -194,7 +202,10 @@ const VendorSettings = () => {
         website: organization.website || "",
         email: organization.email || "",
         countryCode: organization.phonenumber?.startsWith("+")
-          ? organization.phonenumber.slice(0, organization.phonenumber.length - 10)
+          ? organization.phonenumber.slice(
+              0,
+              organization.phonenumber.length - 10
+            )
           : "+1",
         phonenumber: organization.phonenumber?.startsWith("+")
           ? organization.phonenumber.slice(-10)
@@ -225,40 +236,40 @@ const VendorSettings = () => {
     const { countryCode, phonenumber, ...rest } = formValues;
     const payload = {
       ...rest,
-      phonenumber: countryCode && phonenumber ? `${countryCode}${phonenumber}` : phonenumber || "",
+      phonenumber:
+        countryCode && phonenumber
+          ? `${countryCode}${phonenumber}`
+          : phonenumber || "",
       teamsize: formValues.teamsize ? Number(formValues.teamsize) : 0,
       createdby,
     };
     updateOrganization(payload);
-    toast.success("Organization settings updated!");
   };
 
   if (!isLoaded || isLoading) return <LoadingSpinner fullPage />;
-  if (isError) return <div className="text-red-500 text-center py-10">Failed to load organization data</div>;
+  if (isError)
+    return (
+      <div className="text-red-500 text-center py-10">
+        Failed to load organization data
+      </div>
+    );
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl ">
+    <form onSubmit={handleSubmit} className="bg-white p-2  ">
       <div className="flex justify-between items-center mb-8 pb-6 border-b border-gray-100">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Organization Settings</h2>
-          <p className="text-gray-500 mt-1">Manage your company profile and visibility</p>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Organization Settings
+          </h2>
+          <p className="text-gray-500 mt-1">
+            Manage your company profile and visibility
+          </p>
         </div>
-        <button
-          type="submit"
-          className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-medium rounded-lg hover:from-purple-700 hover:to-blue-600 transition-all  disabled:opacity-70"
-          disabled={isUpdating}
-        >
-          {isUpdating ? (
-            <span className="flex items-center gap-2">
-              <LoadingSpinner size="sm" />
-              Saving...
-            </span>
-          ) : (
-            "Save Changes"
-          )}
-        </button>
+        <Button type="submit" className="btn-primary btn-primary:hover" disabled={isUpdating}>
+          {isUpdating ? "Saving..." : "Save Changes"}
+        </Button>
       </div>
-      
+
       <BasicInfoFields formValues={formValues} handleChange={handleChange} />
       <SocialMediaFields formValues={formValues} handleChange={handleChange} />
     </form>

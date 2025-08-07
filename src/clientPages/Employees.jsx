@@ -17,6 +17,7 @@ import { useGetOrganization } from "@/hooks/organization";
 
 // import LoadingSpinner from "@/components/LoadingSpinner";
 
+
 export default function Employees() {
   const { user, isLoaded } = useUser();
   const createdBy = user?.id;

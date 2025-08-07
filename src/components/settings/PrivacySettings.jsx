@@ -4,8 +4,8 @@ import React from "react";
 
 const PrivacySettings = () => {
   return (
-    <div className="bg-white p-6  w-full">
-      <h2 className="text-xl font-bold text-gray-800 mb-6">Privacy Settings</h2>
+    <div className="bg-white p-2  ">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">Privacy Settings</h2>
       
       <div className="space-y-6">
         {/* Cookie Settings */}

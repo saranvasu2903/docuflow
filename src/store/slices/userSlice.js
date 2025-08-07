@@ -1,4 +1,3 @@
-// src/store/slices/userSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -8,7 +7,8 @@ const initialState = {
   fullName: null,
   role: null,
   imageUrl: null,
-  tierid :null
+  tierid: null,
+  permission: [],
 };
 
 const userSlice = createSlice({
@@ -23,15 +23,18 @@ const userSlice = createSlice({
         fullName,
         role,
         imageUrl,
-        tierid
+        tierid,
+        permission = [],
       } = action.payload;
+
       state.userId = userId;
       state.organizationId = organizationId;
       state.email = email;
       state.fullName = fullName;
       state.role = role;
       state.imageUrl = imageUrl;
-      state.tierid = tierid
+      state.tierid = tierid;
+      state.permission = permission;
     },
     clearUserInfo: (state) => {
       state.userId = null;
@@ -40,6 +43,8 @@ const userSlice = createSlice({
       state.fullName = null;
       state.role = null;
       state.imageUrl = null;
+      state.tierid = null;
+      state.permission = [];
     },
   },
 });

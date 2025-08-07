@@ -50,8 +50,6 @@ export function useHideBatches() {
 }
 
 
-// Hidden batches
-// fetch all hidden batches (/batches/false)
 export function useGetAllHiddenBatches() {
   const {
     data: hiddenBatches,
